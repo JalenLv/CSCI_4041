@@ -1,0 +1,111 @@
+%! TEX program=xelatex
+\documentclass[12pt]{article}
+
+\usepackage{prea}
+
+\title{Assignment 1}
+\author{Qiming Lyu}
+\date{2025-09-11}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item The smallest binary heap $ B_h $ of height $ h $ is essentially a perfect binary tree of height $ h-1 $ plus a leaf node on the most bottom left corner, as shown in the figure below.
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.4\textwidth]{1.jpg}
+        \end{figure}
+
+        The number of nodes in $ B_h $, denoted as $ n_{h} $, is given by:
+        $$ n_{h} = 2^h $$
+
+        \begin{proof}
+            We know that a perfect binary tree of height $ h-1 $ has $ 2^{h} - 1 $ nodes. By adding one more node to the most bottom left corner, we get:
+            $$ n_{h} = (2^{h} - 1) + 1 = 2^h $$
+        \end{proof}
+
+    \item The largest binary heap $ B_h $ of height $ h $ is a perfect binary tree of height $ h $, which has $ 2^{h+1} - 1 $ nodes.
+
+        Therefore, the size $ n $ of a binary heap of height $ h $ is bounded by:
+        $$ 2^h \leq n \leq 2^{h+1} - 1 $$
+        
+    \item From the inequality from question 2, we have:
+        $$ 2^{h} \leq n \leq 2^{h+1} - 1 \mathbf{< 2^{h+1}} $$
+
+        Taking the base-2 logarithm of all sides, we get:
+        $$ h \leq \operatorname{lg} n < h+1 $$
+
+        Because $ h $ is an integer and because of the definition of the floor function, we have:
+        $$ h = \left\lfloor \operatorname{lg} n \right\rfloor $$
+
+    \item The index of the last internal node in a binary heap of size $ n $ is
+        $$ \left\lfloor \frac{n}{2} \right\rfloor $$
+
+        \begin{proof}
+            Suppose the height of the binary heap is $ h $. And we divide the binary heap into two parts: the last level and the rest of the tree. Say there are $ k \left( 0 < k \leq 2^{h} \right) $ nodes in the last level, the size of the tree $ n $ is given by:
+            $$ n = \left( 2^{h} - 1 \right) + k. $$
+
+            The index $ I $ of the last internal node is the index of the parent of the last node, which is given by:
+            $$ I = \left( 2^{h-1} - 1 \right) + \left\lceil \frac{k}{2} \right\rceil. $$
+
+            Since 
+            $$ \begin{aligned}[t]
+                \left\lfloor \frac{n}{2} \right\rfloor &= \left\lfloor \left( 2^{h-1} - \frac{1}{2} \right) + \frac{k}{2} \right\rfloor \\
+                &= \left\lfloor \left( 2^{h-1} - 1 \right) + \frac{k}{2} + \frac{1}{2} \right\rfloor \\
+                &= \left( 2^{h-1} - 1 \right) + \left\lfloor \frac{k}{2} + \frac{1}{2} \right\rfloor \\
+            \end{aligned}, $$
+
+            we only need to prove that
+            $$ \left\lfloor \frac{k}{2} + \frac{1}{2} \right\rfloor = \left\lceil \frac{k}{2} \right\rceil. $$
+
+            There are two cases: when $ k $ is even and when $ k $ is odd, that is,
+            $$ k = 2i \text{ or } k = 2i + 1, \quad i \in \mathbb{Z}. $$
+
+            \begin{enumerate}
+                \item[Case 1] $ k = 2i $:
+                    $$ \operatorname{LHS} = \left\lfloor \frac{k}{2} + \frac{1}{2} \right\rfloor = \left\lfloor i + \frac{1}{2} \right\rfloor = i, $$
+                    $$ \operatorname{RHS} = \left\lceil \frac{k}{2} \right\rceil = \left\lceil i \right\rceil = i. $$
+                    Thus, $ \operatorname{LHS} = \operatorname{RHS} $.
+
+                \item[Case 2] $ k = 2i + 1 $:
+                    $$ \operatorname{LHS} = \left\lfloor \frac{k}{2} + \frac{1}{2} \right\rfloor = \left\lfloor i + 1 \right\rfloor = i + 1, $$
+                    $$ \operatorname{RHS} = \left\lceil \frac{k}{2} \right\rceil = \left\lceil i + \frac{1}{2} \right\rceil = i + 1. $$
+                    Thus, $ \operatorname{LHS} = \operatorname{RHS} $.
+            \end{enumerate}
+
+            In both cases, we have $ \operatorname{LHS} = \operatorname{RHS} $. Therefore, we conclude that
+            $$ I = \left\lfloor \frac{n}{2} \right\rfloor $$
+        \end{proof}
+
+    \item 
+        \begin{proof}
+            Two cases: when $ n $ is even and when it is odd.
+            \begin{enumerate}
+                \item[case 1] $ n = 2i $:
+                    $$ \begin{aligned}[t]
+                        \left\lfloor \frac{n}{2} \right\rfloor + \left\lceil \frac{n}{2} \right\rceil &= \left\lfloor i \right\rfloor + \left\lceil i \right\rceil \\
+                        &= i + i \\
+                        &= 2i \\
+                        &= n \\
+                    \end{aligned} $$
+
+                \item[case 2] $ n = 2i + 1 $:
+                    $$ \begin{aligned}[t]
+                        \left\lfloor \frac{n}{2} \right\rfloor + \left\lceil \frac{n}{2} \right\rceil &= \left\lfloor i + \frac{1}{2} \right\rfloor + \left\lceil i + \frac{1}{2} \right\rceil \\
+                        &= i + (i + 1) \\
+                        &= 2i + 1 \\
+                        &= n \\
+                    \end{aligned} $$
+            \end{enumerate}
+
+            In both cases, we have
+            $$ \left\lfloor \frac{n}{2} \right\rfloor + \left\lceil \frac{n}{2} \right\rceil = n $$
+        \end{proof}
+
+    \item The number of internal nodes is $ \left\lfloor \frac{n}{2} \right\rfloor $, and the number of leaf nodes is $ \left\lceil \frac{n}{2} \right\rceil $.
+\end{enumerate}
+
+% \printbibliography
+
+\end{document}
