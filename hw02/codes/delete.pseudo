@@ -1,0 +1,21 @@
+function DELETE(A, i)
+    // A is a max-heap, 1-indexed.
+    // i is the index to delete.
+    // No output since A is modified in place.
+    require 1 <= i <= A.heap_size
+
+    if i = A.heap_size then
+        A.heap_size <- A.heap_size - 1
+        return
+    fi
+
+    swap A[i], A[A.heap_size]
+    A.heap_size <- A.heap_size - 1
+    if i > 1 and A[i] > A[PARENT(i)] then
+        // Bubble up
+        HEAP-INCREASE-KEY(A, i, A[i])
+    else
+        // Sift down
+        MAX-HEAPIFY(A, i)
+    fi
+end

@@ -1,0 +1,28 @@
+function MULTIMERGE(A)
+    // Input: A, an array of k sorted arrays in ascending order, each of length n/k.
+    // Output: B, the sorted merge of all arrays in A.
+    k <- A.length
+    n <- k * A[1].length
+
+    H <- empty array of size k as min-heap
+    for i <- 1 to k do
+        // Insert the first element of each array into the heap.
+        MIN-HEAP-INSERT(H, A[i][1], k)
+    end
+
+    B <- new array of length n
+    p <- 1
+    while H.heap_size > 0 do
+        u <- MIN-HEAP-EXTRACT-MIN(H)
+        B[p] <- u
+        p <- p + 1
+
+        // Insert the next element if necessary.
+        if u.id_in_arr < A[u.arr_id].length then
+            next_element <- A[u.array_index][u.index_in_array + 1]
+            MIN-HEAP-INSERT(H, next_element, k)
+        end
+    end
+
+    return B
+

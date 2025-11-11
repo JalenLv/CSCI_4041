@@ -1,0 +1,16 @@
+function SELECT-K-VIA-MEDIAN(A, k)
+    // A is the array to select from
+    // k tells to select the k-th smallest element
+    // Returns the k-th smallest element of A
+    n <- A.length
+    if k <= (n + 1) / 2 then
+        x <- n + 1 - 2 * k
+        y <- 0
+    else
+        x <- 0
+        y <- 2 * k - n - 1
+    fi
+
+    B <- A + array of x copies of -infinity + array of y copies of +infinity
+    return MEDIAN(B)
+end

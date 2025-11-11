@@ -1,0 +1,34 @@
+function MATRIX-MULTIPLY(A, B)
+    // A is a p x q matrix
+    // B is a q x r matrix
+    // Returns the product matrix C = A * B of size p x r
+    require A.cols = B.rows
+    p <- A.rows
+    q <- A.cols
+    r <- B.cols
+    C <- A zero matrix of size p x r
+
+    for i <- 1 to p do
+        for j <- 1 to r do
+            for k <- 1 to q do
+                C[i, j] <- C[i, j] + A[i, k] * B[k, j]
+            done
+        done
+    done
+
+    return C
+end
+
+function MULTIPLY-CHAIN(i, j, s, A)
+    // A is array of matrices A[1..n]
+    // s is the split table computed by MATRIX-CHAIN-ORDER
+    // i and j are the indices of the subchain A[i..j] to be multiplied
+    // Returns the product of matrices A[i..j]
+    if i = j then
+        return A[i]
+
+    k <- s[i, j]
+    L <- MULTIPLY-CHAIN(i, k, s, A)
+    R <- MULTIPLY-CHAIN(k + 1, j, s, A)
+    return MATRIX-MULTIPLY(L, R)
+end

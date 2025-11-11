@@ -1,0 +1,18 @@
+function findSet(x)
+    // Non-recursive version of findSet with path compression
+    root <- x
+
+    // Find the root
+    while parent[root] != root do
+        root <- parent[root]
+    done
+
+    // Path compression
+    while x != root do
+        next <- parent[x]
+        parent[x] <- root
+        x <- next
+    done
+
+    return root
+end

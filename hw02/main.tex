@@ -1,0 +1,102 @@
+%! TEX program=xelatex
+\documentclass[12pt]{article}
+
+\usepackage{prea}
+
+\title{Assignment 2}
+\author{Qiming Lyu}
+\date{2025-09-28}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item From problem 6 in Homework 1, we know that the number of internal nodes of a binary heap of size $ n $ is $ \left\lfloor \frac{n}{2} \right\rfloor $, and the number of leaf nodes is $ \left\lceil \frac{n}{2} \right\rceil $. Therefore we conclude that:
+        \begin{itemize}
+            \item The number of leaves in a heap of size $ n $ is $ \left\lceil \frac{n}{2} \right\rceil $.
+            \item If we remove all leaves from a heap of size $ n $, the remaining heap has size $ \left\lfloor \frac{n}{2} \right\rfloor $.
+        \end{itemize}
+
+        We remove all leaves once. We get a heap of size $ \left\lfloor \frac{n}{2} \right\rfloor $. The leave nodes of the new heap are the nodes at height 1 of the original heap. { \bfseries The number of them is $ \left\lceil \frac{\left\lfloor \frac{n}{2} \right\rfloor}{2} \right\rceil $. }
+
+    \item After removing leaves $ h $ times, the size becomes
+        $$ n^{(h)} = \underbrace{\left\lfloor \cdots \left\lfloor \left\lfloor n / 2 \right\rfloor / 2 \right\rfloor \cdots / 2 \right\rfloor}_{h \text{ floors}} $$
+
+        We first prove that for any given $ n $ the following identity holds:
+        $$ \left\lfloor \frac{\left\lfloor \frac{n}{2^{h-1}} \right\rfloor}{2} \right\rfloor = \left\lfloor \frac{n}{2^{h}} \right\rfloor $$
+
+        \begin{proof}
+            Consider any integer $ n $ in its binary form. When we divide $ n $ by $ 2^{h-1} $, we are effectively right-shifting the binary representation of $ n $ by $ h-1 $ bits. The floor operation simply removes any fractional part that may arise from this division. Now, when we take the result and divide it by 2 again (which is equivalent to right-shifting by one more bit), we are effectively right-shifting the original binary representation of $ n $ by a total of $ h $ bits. The floor operation again removes any fractional part. Therefore, the two sides of the equation represent the same operation on the binary representation of $ n $, leading to the same result. 
+
+            Hence, we have:
+            $$ \left\lfloor \frac{\left\lfloor \frac{n}{2^{h-1}} \right\rfloor}{2} \right\rfloor = \left\lfloor \frac{n}{2^{h}} \right\rfloor $$
+        \end{proof}
+
+        Using this identity, we can simplify $ n^{(h)} $ as follows:
+        $$ n^{(h)}=\left\lfloor \frac{n}{2^{h}} \right\rfloor $$
+
+        {
+            \bfseries
+            Therefore, the number of nodes at height $ h $ is $ \left\lceil \frac{\left\lfloor \frac{n}{2^{h}} \right\rfloor}{2} \right\rceil $.
+        }
+
+        We then prove that $ \left\lceil \frac{\left\lfloor \frac{n}{2^{h}} \right\rfloor}{2} \right\rceil \leq \left\lceil \frac{n}{2^{h+1}} \right\rceil $:
+        \begin{proof}
+            Since $ \left\lfloor x \right\rfloor \leq x $ for any real number $ x $, we have
+            $$ \frac{\left\lfloor \frac{n}{2^{h}} \right\rfloor}{2} \leq \frac{\frac{n}{2^{h}}}{2} = \frac{n}{2^{h+1}} $$
+
+            Taking the ceiling of both sides, we get
+            $$ \left\lceil \frac{\left\lfloor \frac{n}{2^{h}} \right\rfloor}{2} \right\rceil \leq \left\lceil \frac{n}{2^{h+1}} \right\rceil $$
+        \end{proof}
+
+    \item \lstinputlisting[style=pseudo, caption={Iterative Max-Heapify}]{codes/heapify.pseudo}
+
+    \item \lstinputlisting[style=pseudo, caption={Delete}]{codes/delete.pseudo}
+
+        \begin{itemize}
+            \item \textbf{Why it works:} Swapping the target with the last element removes the target after shrinking the heap. Only position $ i $ can violate the heap property. If the new key at $ i $ exceeds its parent, raising it with HEAP-INCREASE-KEY restores order on the path to the root, otherwise MAX-HEAPIFY restores order on the path to leaves.
+
+            \item \textbf{Runtime:} Both HEAP-INCREASE-KEY and MAX-HEAPIFY take $ O(\log n) $ time. Since either one of them is called in DELETE, the runtime of DELETE is $ O(\log n) $.
+        \end{itemize}
+
+    \item \lstinputlisting[style=pseudo, caption={Multimerge}]{codes/multimerge.pseudo}
+
+    \item 
+        \begin{proof}
+            Notice that
+            $$ \begin{aligned}[t]
+                T(n) &= T(n-1) + n \\
+                &= T(n-2) + (n-1) + n \\
+                &= T(n-3) + (n-2) + (n-1) + n \\
+                &\ \ \vdots \\
+                &= T(1) + 2 + 3 + \cdots + (n-1) + n \\
+                &= T(0) + 1 + 2 + 3 + \cdots + (n-1) + n \\
+                &= T(0) + \frac{n(n+1)}{2} \in \Theta(n^2)
+            \end{aligned} $$
+        \end{proof}
+
+    \item We substitute $ T(n)=T(2^{k}) $ with $ S(k) $. Then the recurrence becomes
+        $$ S(k)=2S(k-1)+2^{k}\cdot k,\quad S(0)=1. $$
+
+        Divide both sides by $ 2^{k} $:
+        $$ \frac{S(k)}{2^{k}} = \frac{S(k-1)}{2^{k-1}} + k. $$
+
+        Let $ P(k) = \frac{S(k)}{2^{k}} $. Then we have
+        $$ P(k) = P(k-1) + k, \quad P(0) = 1. $$
+
+        From the result of Problem 6, we know that
+        $$ \begin{aligned}[t]
+            P(k) &= P(0) + \frac{k(k+1)}{2} \\
+            &= 1 + \frac{k(k+1)}{2}
+        \end{aligned} $$
+
+        Hence,
+        $$ S(k) = 2^{k} \cdot P(k) = 2^{k-1}\left( k^2+k+2 \right). $$
+
+        Substitute back to $ n $:
+        $$ T(n) = \frac{n}{2} \left( \log^2 n + \log n + 2 \right). $$
+\end{enumerate}
+
+% \printbibliography
+
+\end{document}

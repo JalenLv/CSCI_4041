@@ -1,0 +1,96 @@
+%! TEX program=xelatex
+\documentclass[12pt]{article}
+
+\usepackage{prea}
+
+\title{Assignment 5}
+\author{Qiming Lyu}
+\date{2025-11-10}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item 
+        \begin{proof}
+            We follow the textbook's activities $ a_i $ given by \figref{fig:main-q1}.
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.6\textwidth]{q1.png}
+                \caption{%
+                    A set $ \left\{ a_1, a_2, \dots , a_{11} \right\} $ of activities.\\
+                    Activity $ a_i $ has start time $ s_i $ and finish time $ f_i $.%
+                }
+                \label{fig:main-q1}
+            \end{figure}
+
+            Greedy-by-earliest-start picks $ a_3 $ first since $ s_3=0 $. After taking $ a_3 $, the remaining compatible activities must start at at least $ 6 $, so the best you can do is, for example, $ \left\{ a_3, a_7, a_{11} \right\} $, which has size $ 3 $.\\
+
+            But there exists a larger compatible set, for example, $ \left\{ a_1, a_4, a_8, a_{11} \right\} $, which has size $ 4 $.\\
+
+            Therefore, choosing the activity that starts first is \textbf{NOT} a valid greedy strategy.
+        \end{proof}
+
+    \item
+        \begin{itemize}
+            \item \textbf{Algorithm}:
+                \begin{enumerate}
+                    \item Sort the elements of $ A $ in ascending order, such that
+                        $$ a_1 \leq a_2 \leq \cdots \leq a_n. $$
+                    \item Sort the elements of $ B $ in ascending order, such that
+                        $$ b_1 \leq b_2 \leq \cdots \leq b_n. $$
+                    \item The bijective function $ f $ is defined as
+                        $$ f(a_i) = b_i,\quad \forall\ i = 1, 2, \dots, n. $$
+                \end{enumerate}
+            \item \textbf{Proof of correctness}:
+                \begin{proof}
+                    Take any bijection $ g $. If there exists $ i<j $ with $ a_i<a_j $ but $ g(a_i)=b_j $ and $ g(a_j)=b_i $ where $ b_i \leq b_j $, then swapping the images of $ a_i $ and $ a_j $ changes the score by
+                    \begin{equation} \label{equ:main-q2}
+                        \left( a_i b_i+a_j b_j \right)-\left( a_i b_j+a_j b_i \right)=\left( a_j-a_i \right)\left( b_j-b_i \right) \geq 0.
+                    \end{equation}
+
+                    So swap increases the score and makes no difference when one of the pairs is equal.\\
+
+                    By repeatedly fixing such inversions, we eventually reach the bijection defined by the algorithm, which must have the maximum score.\\
+
+                    BTW, note that \eqref{equ:main-q2} holds for any real numbers, which includes negative numbers as well. This means the algorithm works regardless of whether the numbers in $ A $ and $ B $ are positive or negative.
+                \end{proof}
+
+            \item \textbf{Runtime}:
+                Sorting $ A $ and $ B $ each takes $ O(n\log n) $ time, and multiplying and adding the pairs takes $ O(n) $ time. Therefore, the total runtime is
+                $$ O(n\log n). $$
+        \end{itemize}
+
+    \item 
+        \begin{itemize}
+            \item \textbf{Algorithm}:
+                \begin{itemize}
+                    \item Sort the elements of $ S $ in ascending order, such that
+                        $$ x_1 \leq x_2 \leq \cdots \leq x_n. $$
+                    \item Initialize an empty set $ U $ of unit intervals and set $ i \leftarrow 1 $.
+                    \item While $ i \leq n $:
+                        \begin{itemize}
+                            \item Let $ a \leftarrow x_i $. Add the unit interval $ [a, a+1] $ to $ U $.
+                            \item Advance $ i $ to the first index such that $ x_i > a+1 $.
+                        \end{itemize}
+                \end{itemize}
+            \item \textbf{Proof of correctness}:
+                \begin{proof}
+                    Let $ U=\left\{ [a_1, a_1+1], [a_2, a_2+1], \dots, [a_k, a_k+1] \right\} $ be the set of unit intervals returned by the algorithm, where $ a_1 < a_2 < \cdots < a_k $.\\
+
+                    We prove by induction on the number of points. Base case, $ S=\emptyset $, the algorithm returns $ U=\emptyset $, which is optimal.\\
+
+                    We first show the structure of an optimal solution. Let $ x $ be the leftmost uncovered point when the algorithm chooses its next interval. Any feasible solution must contain some interval $ [b, b+1] $ such that $ b \leq x \leq b+1 $. The optimal solution always takes $ b=x $ so that it can cover as many points as possible to the right of $ x $ and does not waste any coverage to the left of $ x $. Hence there exists an optimal solution whose first interval is $ [x, x+1] $.\\
+
+                    Apply this with $ x=x_1 $, the leftmost point in $ S $, we see that there exists an optimal solution whose first interval is $ [a_1, a_1+1] $.\\
+
+                    Then we examine the optimal substructure. Remove all the points in $ [a_1, a_1+1] $, and call the remaining set $ S'=\{x|x\in S \land x>a_1+1\} $. We see that covering $ S' $ with the minimum number of unit intervals is exactly the same as covering $ S $ after fixing the first interval to be $ [a_1, a_1+1] $. By the inductive hypothesis, our algorithm covers $ S' $ optimally. Therefore, our algorithm covers $ S $ optimally.\\
+                \end{proof}
+        \end{itemize}
+
+    \item \lstinputlisting[style=pseudo, caption={MultiplyChain(i, j, s, A) Implementation}]{codes/mult_chain.pseudo}
+\end{enumerate}
+
+% \printbibliography
+
+\end{document}

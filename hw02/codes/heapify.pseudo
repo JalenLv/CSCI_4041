@@ -1,0 +1,25 @@
+function ITERATIVE-MAX-HEAPIFY(A, i)
+    // A is a max-heap, 1-indexed.
+    // i is the index to heapify.
+    // No output since A is modified in place.
+    j <- i
+    while true do
+        L <- 2*j
+        R <- 2*j + 1
+
+        largest <- j
+        if L <= A.heap_size and A[L] > A[largest] then
+            largest <- L
+        fi
+        if R <= A.heap_size and A[R] > A[largest] then
+            largest <- R
+        fi
+
+        if largest = j then
+            return
+        fi
+
+        swap A[j], A[largest]
+        j <- largest
+    end
+end

@@ -1,0 +1,103 @@
+%! TEX program=xelatex
+\documentclass[12pt]{article}
+
+\usepackage{prea}
+
+\title{Assignment 3}
+\author{Qiming Lyu}
+\date{2025-10-13}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item 
+        \begin{enumerate}
+            \item Each slice can be arranged in $ k! $ ways, and there are $ n / k $ such slices. Therefore, the number of permutations is
+                $$ \left( k! \right)^{n/k} $$.
+
+            \item The tree must have at least one leaf for each valid permutation, which gives
+                $$ 2^{h} \geq \left( k! \right)^{n / k} $$
+
+                Taking logarithm on both sides, we have
+                $$ h \geq \frac{n}{k} \lg k! $$
+
+            \item We are given $ \lg n! = \Theta\left( n \lg n \right) $, which implies
+                $$ \lg k! = \Theta\left( k \lg k \right) = \Omega\left( k \lg k \right). $$
+
+                Therefore,
+                $$ h = \Omega\left( \frac{n}{k}\lg k! \right) = \Omega\left( \frac{n}{k}\cdot k\lg k \right)=\Omega\left( n\lg k \right). $$
+        \end{enumerate}
+
+    \item 
+        \begin{enumerate}
+            \item Each pair of two elements could appear in two possible orders:
+                \begin{itemize}
+                    \item either $ x<y $,
+                    \item or $ y>x $.
+                \end{itemize}
+
+                We only allow $ x<y $ which is sorted correctly. Since there are $ n / 2 $ such pairs, we are cutting the number of possible arrangements by $ 2^{n / 2} $ in total. Thus, the number of valid permutations is
+                $$ \frac{n!}{2^{n / 2}}. $$
+
+            \item $ 2^{h} \geq \frac{n!}{2^{n / 2}} \implies h \geq \lg n! - \frac{n}{2} $.
+                
+            \item $ h = \Omega\left( \lg n! - \frac{n}{2} \right) = \Omega\left( n \lg n - n \right) = \Omega\left( n \lg n \right) $.
+        \end{enumerate}
+
+    \item The idea is to choose a good pivot at every step using a linear-time selection routine since the $ \Theta\left( n^2 \right) $ time complexity only happens when the pivot is the smallest or largest element every time, which means we have unbalanced partitions every time. If we can always choose the median as the pivot, then we will always have two balanced partitions of size $ n / 2 $ each. \\
+
+        Say we are given a function "SELECT(A, k)":
+        \lstinputlisting[style=pseudo, caption={Select}]{codes/select.pseudo}
+
+        We are selecting the median of the array as the pivot. The partition routine is the same as that in quick sort. The overall algorithm is as follows:
+        \lstinputlisting[style=pseudo, caption={Better Quick Sort}]{codes/better_quick_sort.pseudo}
+
+        To analyze the time complexity, we have the recurrence
+        $$ T(n) = T\left( \frac{n}{2} \right) + T\left( \frac{n}{2} \right) + \Theta(n) = 2T\left( \frac{n}{2} \right) + \Theta(n). $$
+
+        Therefore we have $ T(n) = \Theta(n \lg n) $.
+
+    \item We can create an augmented array $ B $ by adding $ -\infty $ and $ +\infty $ so that the $ k $-th smallest of the real items is the median of $ B $.
+
+        Say we add $ x $ copies of $ -\infty $ and $ y $ copies of $ +\infty $. Then the median index of $ B $ is
+        $$ i_{\text{med}}=\frac{n + x + y + 1}{2}\quad \text{(one-indexed)}. $$
+
+        We want $ k+x=i_{\text{med}} $, which gives
+        $$ y=2k+x-1-n\quad \text{and}\quad x = y-2k+1+n. $$
+
+        We choose $ x $ and $ y $ as follows:
+        \begin{itemize}
+            \item if $ k \leq \left( n+1 \right) / 2 $, set $ x=n+1-2k $ and $ y=0 $;
+            \item if $ k > \left( n+1 \right) / 2 $, set $ x=0 $ and $ y=2k-1-n $.
+        \end{itemize}
+
+        Pseudo code is as follows:
+        \lstinputlisting[style=pseudo, caption={Find $ k $-th Smallest}]{codes/kth_smallest.pseudo}
+
+    \item \lstinputlisting[style=pseudo, caption={Non-recursive findSet with Path Compression}]{codes/non_recursive_findset_pc.pseudo}
+
+    \item WLOG, assume the size of the Disjoint Set is a power of two.
+        \begin{enumerate}
+            \item \textbf{makeSet phase:} we create $ n $ sets, each containing one element. The time complexity is $ \Theta(n) $.
+            \item \textbf{union phase:} we always union equal ranks. \\
+
+                In each round, we halve the number of sets by unioning every pair of sets with the same rank by calling "union(a,b)", where $ a $ and $ b $ are roots of the pair of sets. \\
+
+                Since their ranks are equal, union-by-rank makes one the parent of the other and increases the parent's rank by $ 1 $. After $ \lg n $ rounds, there is only one set left with rank $ \lg n $. \\
+
+                In each round, we do $ \left( \# \text{ Disjoint Sets} / 2 \right) $ unions, each costing $ \Theta(1) $. Therefore, the time complexity is
+                $$ \Theta(n) + \Theta\left( \frac{n}{2} \right) + \Theta\left( \frac{n}{4} \right) + \cdots + \Theta(1) = \Theta(n). $$
+
+            \item \textbf{findSet phase:} we do findSet operations $ m $ times on a deepest leaf $ v $ in the final tree. Each operation costs $ \Theta(\lg n) $ since the height of the tree is $ \lg n $ and there is no path compression. Therefore, the time complexity is $ \Theta(m \lg n) $.
+        \end{enumerate}
+
+        The overall time complexity is
+        $$ \Theta(n) + \Theta(n) + \Theta(m \lg n) = \Theta(n) + \Theta(m \lg n). $$
+
+        When $ m >> n $, the time complexity is $ \Theta(m \lg n) $.
+\end{enumerate}
+
+% \printbibliography
+
+\end{document}

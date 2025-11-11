@@ -1,0 +1,9 @@
+function BETTER-QUICK-SORT(A)
+    // A is the array to be sorted
+    if A.length <= 1 then
+        return A
+    fi
+    p <- SELECT(A, A.length / 2)
+    (L, E, R) <- partition A around pivot p
+    return BETTER-QUICK-SORT(L) + E + BETTER-QUICK-SORT(R) // "+" is array concatenation
+end
